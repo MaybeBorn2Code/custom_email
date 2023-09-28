@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet">
+    <title>{{ ctx_title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+    <div class="main_messsage">
+        <div class="container_message">
+            <h1>Search page</h1>
+            <form method="post" action="{% url 'external_search' %}">
+                {% csrf_token %}
+                <input type="text" name="sender" placeholder="Search by sender">
+                <br><br>
+                <input type="text" name="recipient" placeholder="Search by recipients">
+                <br><br>
+                <input type="text" name="keyword" placeholder="Search in messages and subject">
+                <br><br>
+                <button type="submit">Search</button>
+            </form>
+
+            {% if search_results %}
+            <h2>Search Results:</h2>
+            <ul>
+                {% for result in search_results %}
+                <li>
+                    <strong>Sender:</strong> {{ result.sender }}
+                    <br>
+                    <strong>Recipient:</strong> {{ result.recipient }}
+                    <br>
+                    {% if result.additional_recipient %}
+                    <strong>Additional Recipient:</strong> {{ result.additional_recipient }}
+                    <br>
+                    {% endif %}
+                    <strong>Subject:</strong> {{ result.subject }}
+                    <br>
+                    <strong>Message:</strong> {{ result.message }}
+                    <br>
+                    {% if result.file %}
+                    <strong>File:</strong> <a href="{{ result.file.url }}">{{ result.file.name }}</a>
+                    <br>
+                    {% endif %}
+                    <strong>Timestamp:</strong> {{ result.timestamp }}
+                    <br><br>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No results found.</p>
+            {% endif %}
+            <a class="back-link" href="{% url 'mail' %}">Go back</a>
+        </div>
+    </div>
+</body>
+
+</html>

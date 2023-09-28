@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet">
+    <title>{{ ctx_title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="main_messsage">
+        <div class="container_message">
+            <h1>{{ ctx_title }}</h1>
+            <a class="back-link" href="{% url 'mail' %}">Go back</a>
+            <form action="{% url 'copy-to-excel-internal' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Copy to Excel</button>
+            </form>
+            <h2>Messages List</h2>
+            <ul class="messages-list">
+                {% for email in posts %}
+                <li class="message">
+                    <b>
+                        <p>To: {{ email.recipient }}</p>
+                    </b>
+                    {% if email.additional_recipient %}
+                    <b>
+                        <p>To: {{ email.additional_recipient }}</p>
+                    </b>
+                    {% endif %}
+                    <hr>
+                    <p>From: {{ email.sender }}</p>
+                    <p>Subject: {{ email.subject }}</p>
+                    <p>Message: {{ email.message }}</p>
+                    <p>At: {{ email.timestamp }}</p>
+                    <hr>
+                    {% if email.file %}
+                    <a class="attachment-link" href="{{ email.file.url }}">Download Attachment</a>
+                    {% endif %}
+                </li>
+                {% empty %}
+                <li>No posts found.</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Pagination -->
+            {% if posts.has_previous %}
+            <a href="?page=1">First</a>
+            <a href="?page={{ posts.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            {% for num in posts.paginator.page_range %}
+            {% if posts.number == num %}
+            <span class="current-page">{{ num }}</span>
+            {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+            {% endfor %}
+
+            {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">Next</a>
+            <a href="?page={{ posts.paginator.num_pages }}">Last</a>
+            {% endif %}
+
+        </div>
+    </div>
+</body>
+
+</html>

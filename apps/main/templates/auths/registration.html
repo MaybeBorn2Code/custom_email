@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet">
+    <title>{{ ctx_title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <form action="" method="post">
+        <h1>WELCOME TO SIMPLE MAIL!</h1>
+        <h2>{{ info }}</h2>
+        <a href="{% url 'login' %}">return to login page.</a>
+        {% csrf_token %}
+        {{ ctx_form.as_p }}
+        <input type="submit" value="Register">
+    </form>
+</body>
+
+</html>

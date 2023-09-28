@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet">
+    <title>{{ ctx_title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="main_messsage">
+        <div class="container_message">
+
+            <h1>{{ ctx_title }}</h1>
+            <a class="back-link" href="{% url 'internal_mail' %}">Go back</a>
+            <form action="{% url 'copy-to-excel-outbox' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Copy to Excel</button>
+            </form>
+            <h3>Messages List</h3>
+            <ul class="messages-list">
+                {% for message, decrypted_message in messages_with_decryption %}
+                <div class="message">
+                    <h3>From: {{ message.user }}</h3>
+                    <hr>
+                    {% for recipient in message.recipients.all %}
+                    <p><strong>Recipient:</strong> {{ recipient }}</p>
+                    {% endfor %}
+                    <p><strong>Subject:</strong> {{ message.subject }}</p>
+                    <p><strong>Message:</strong> {{ message.body }}</p>
+                    <p><strong>Decrypted message:</strong> {{ decrypted_message }}</p>
+                    <p><strong>At:</strong> {{ message.timestamp }}</p>
+                    {% if message.attachment %}
+                    <hr>
+                    <a class="attachment-link" href="{{ message.attachment.url }}">Download Attachment</a>
+                    {% endif %}
+                    <form action="{% url 'delete_email' message.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            </div>
+                {% empty %}
+                <li>No posts found.</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Pagination controls -->
+            {% if outbox_messages.has_other_pages %}
+            <div class="pagination">
+                {% if outbox_messages.has_previous %}
+                <a href="?page=1">&laquo; First</a>
+                <a href="?page={{ outbox_messages.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                <span class="current-page">{{ outbox_messages.number }} of {{ outbox_messages.paginator.num_pages }}.</span>
+
+                {% if outbox_messages.has_next %}
+                <a href="?page={{ outbox_messages.next_page_number }}">Next</a>
+                <a href="?page={{ outbox_messages.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet">
+    <title>{{ ctx_title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="{% url 'select' %}">Go back</a>
+            <br><br>
+            <a href="{% url 'logout' %}">Logout</a>
+            <br><br>
+        </div>
+        <div class="main_message">
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ info }}
+                <p>Click left mouse button to start</p>
+                <p>Use arrows on keyboard to move</p>
+                <input type="submit" value="RUN!">
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
