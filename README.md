@@ -1,6 +1,5 @@
 Custom email client using Django MVC (using PostgreSQL) and Redis
-requires .env with following parameters
-------------------------------------------------------------------
+requires .env with following parameters:
 SECRET_KEY,
 DEBUG,
 EMAIL_HOST,
